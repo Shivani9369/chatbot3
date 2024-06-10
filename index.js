@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     window.botpressWebChat.init({
         "composerPlaceholder": "Hi! How can i help you",
-        // "botConversationDescription": "Made by SP",
         "botName": "IOAGPL Bot",
         "botId": "27a85659-0121-49dc-bf62-6e4a69fec085",
         "hostUrl": "https://cdn.botpress.cloud/webchat/v1",
@@ -27,32 +26,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
         "webhookId": "d01e4edf-23dc-49db-9276-abae697088f4",
         "lazySocket": true,
         "showBotInfoPage": true,
-        "themeName": "prism",
-        "frontendVersion": "v1",
+        // "themeName": "prism",
+        // "frontendVersion": "v1",
         "avatarUrl": "https://play-lh.googleusercontent.com/XMWHlx11Yfd7q1624ic0BBMgB8cJ-c3usY_p3ZneMGUBJZagK-uoeyfXmXeOeuA0b3c",
         "phoneNumber": "1800 2335 5666",
         "privacyPolicy": "https://ioagpl.com/privacy-policy/",
         "emailAddress": "info@ioagpl.com",
         "website": "https://ioagpl.com/",
-        // "showPoweredBy": true,
-        "className": "webchatIframe",
-        // 'className': 'webchatIframe',
-        // 'containerWidth': '50%20',
-        // 'layoutWidth': '50%24',
-        //   'hideWidget': true,
+        // "className": "webchatIframe",
         'enableConversationDeletion': true,
-        // 'disableAnimations': true,
-        'closeOnEscape': false,
+        // 'closeOnEscape': true,
         'stylesheet': 'https://webchat-styler-css.botpress.app/prod/code/8f53671c-adcd-44d3-aa55-487886a67118/v75787/style.css',
-        'showConversationsButton': false,
+        // 'showConversationsButton': false,
         'enableTranscriptDownload': true,
         'showCloseButton': true,
-        "themeName": "eggplant",
+        // "themeName": "eggplant",
         "frontendVersion": "v1",
-        "useSessionStorage": true,
-        "theme": "eggplant",
-        "themeColor": "#2563eb",
-        "enablePersistHistory": true,
+        // "useSessionStorage": false,
+        // "theme": "eggplant",
+        // "themeColor": "#2563eb",
+        // "enablePersistHistory": false,
         "allowedOrigins": []
     });
 
@@ -80,6 +73,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             console.log(event.value.botResponse);
             // synthesizeSpeech(event.value.botResponse);  
             let speech = new SpeechSynthesisUtterance();
+            speech.pitch = 0.3;
+            speech.rate = 1;
+            let voices;
+            voices = window.speechSynthesis.getVoices();
+            speech.voice = voices[1];
+            console.log(voices);
             speech.text = event.value.botResponse;
             window.speechSynthesis.speak(speech);
         }
@@ -134,7 +133,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
 
             }
-            
+
         };
     }
     else {
@@ -143,7 +142,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     startButton.addEventListener('click', function () {
         transcript = "";
         recognition.lang = ttsLang;
-        startButton.innerHTML='Listening...';
+        startButton.innerHTML = 'Listening...';
         recognition.start();
 
     });
@@ -153,11 +152,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
         recognition.stop();
         const combinedTranscript = transcript + interimTranscript;
         console.log("Transcript:" + combinedTranscript);
+        console.log(typeof(combinedTranscript))
         main.style.display = "none";
-        startButton.innerHTML='Start Listening';
+        startButton.innerHTML = 'Start Listening';
         window.botpressWebChat.sendPayload({
             type: 'trigger',
             payload: { sttTranscript: combinedTranscript }
         });
     });
 });
+
+
+var synth = window.speechSynthesis;
+
+synth.onvoiceschanged = function () {
+    var voices = synth.getVoices();
+    voices.forEach(function (voice, index) {
+        // console.log("Voice " + index + ":", voice.name);
+    });
+};
